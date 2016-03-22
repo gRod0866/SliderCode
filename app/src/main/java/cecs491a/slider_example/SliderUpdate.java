@@ -1,4 +1,12 @@
 package cecs491a.slider_example;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,8 +22,14 @@ import android.widget.Button;
 import android.content.*;
 import android.widget.Toast;
 import java.lang.Integer;
-//import java.lang.String;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 public class SliderUpdate extends AppCompatActivity {//The Sliders
     SeekBar pGender, pExpression, pOrientation;
     SeekBar sGenderMax, sExpressionMax, sOrientationMax, sGenderMin, sExpressionMin, sOrientationMin;
@@ -107,6 +121,8 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
 
         UpdateButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+                new sendUpdatePSliders().execute();
+                new sendUpdateSSliders().execute();
                 //Intent object to pass values.
                 Intent intent = new Intent(getApplicationContext(), Slider.class);//Homepage.class
 
@@ -330,5 +346,94 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
                 // TODO Auto-generated method stub
             }
         });
+
     }
+
+    class sendUpdatePSliders extends AsyncTask<Void,Void,Void> {
+        String gperson = text1.getText().toString();
+        String eperson = text2.getText().toString();
+        String operson = text3.getText().toString();
+
+        PrintWriter out;
+        BufferedReader in;
+
+        protected Void doInBackground(Void... args) {
+            try {
+                Socket sock = new Socket("10.0.2.2", 4910);
+                out = new PrintWriter(sock.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+
+                String command = "updatePSlider, " + "BPizzle" + ", " + gperson + ", " + eperson
+                        + ", " + operson;
+
+                out.println(command);
+                Log.i("Register Command", command);
+                String temp;
+                while ((temp = in.readLine()) != null) {
+                    if(temp == "true"){
+                        System.out.println(temp);
+                    } else {
+                        Log.d("Error", command);
+                    }
+                    Log.d("Register Command, ", temp);
+                    System.out.println(temp);
+                }
+                sock.close();
+            } catch (UnknownHostException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    class sendUpdateSSliders extends AsyncTask<Void,Void,Void> {
+        String gmax = text4.getText().toString();
+        String emax = text5.getText().toString();
+        String omax = text6.getText().toString();
+        String gmin = text7.getText().toString();
+        String emin = text8.getText().toString();
+        String omin = text9.getText().toString();
+
+        PrintWriter out;
+        BufferedReader in;
+
+        protected Void doInBackground(Void... args) {
+            try {
+                //host = InetAddress.getLocalHost();
+                Socket sock = new Socket("10.0.2.2", 4910);
+                out = new PrintWriter(sock.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+
+                //username = username of whatever was passed.
+                String command = "updateSSlider, " + "BPizzle" + ", " + gmax + ", " + gmin + ", " +
+                        emax + ", " + emin + ", " + omax + ", " + omin;
+
+                out.println(command);
+                Log.i("Register Command", command);
+                String temp;
+                while ((temp = in.readLine()) != null) {
+                    if(temp == "true"){
+                        System.out.println(temp);
+                    } else {
+                        Log.d("Error", command);
+                    }
+                    Log.d("Register Command, ", temp);
+                    System.out.println(temp);
+                }
+                sock.close();
+            } catch (UnknownHostException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
 }
