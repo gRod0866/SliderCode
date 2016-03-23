@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
                 new sendSSliders().execute();
 
                 //Intent object to pass values.
-                Intent intent = new Intent(getApplicationContext(), Slider.class);
+                /*Intent intent = new Intent(getApplicationContext(), Slider.class);
                 String value1 = text1.getText().toString();
                 intent.putExtra("personalSlider1", value1);
 
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
 
                 String value9 = text9.getText().toString();
                 intent.putExtra("seekingSlider3b", value9);
-                startActivity(intent);
+                startActivity(intent);*/
             }
         });
     }
@@ -387,14 +387,13 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
 
         protected Void doInBackground(Void... args) {
             try {
-                //host = InetAddress.getLocalHost();
                 Socket sock = new Socket("10.0.2.2", 4910);
                 out = new PrintWriter(sock.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
                 //Add user dummy
-                String command = "addUser, " + "Aaguy21" + ", " + "sumpass" + ", " + "Mitch"
-                        + ", " + "SomeDude" + ", " + "Aaguy21@thisweb.com" + ", " + "23";
+
+                String command = "addUser, AlbertG, passwordAL, Albert, Ghee, Al@gmai.com, 23";
 
                 out.println(command);//Sends command to the server.
                 Log.i("Register Command, ", command);
