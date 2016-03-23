@@ -392,6 +392,7 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
                 //Add user dummy
+                //some text here
 
                 String command = "addUser, AlbertG, passwordAL, Albert, Ghee, Al@gmai.com, 23";
 
