@@ -34,20 +34,28 @@ import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {//public class RegisterSliders()
     //EditText Username;
-    //EditText Name;
-    //EditText Birthdate;
 
+    //3 Seekbar Objects for the Personal Slider
     SeekBar pGender, pExpression, pOrientation;
+
+    //6 Seekbar Objects for the Seeking Slider
     SeekBar sGenderMax, sExpressionMax, sOrientationMax;
     SeekBar sGenderMin, sExpressionMin, sOrientationMin;
 
+    //Button saves and registers values.
     Button button;
+
+    //Displays values
     TextView text1, text2, text3, text4, text5, text6, text7, text8, text9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*Initialize values*/
+        //Seekbar represents our sliders. 9 total as of now.
+
         pGender = (SeekBar) findViewById(R.id.pGender);
         pExpression = (SeekBar) findViewById(R.id.pExpression);
         pOrientation = (SeekBar) findViewById(R.id.pOrientation);
@@ -58,6 +66,7 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         sExpressionMin = (SeekBar) findViewById(R.id.sExpressionMin);
         sOrientationMin = (SeekBar) findViewById(R.id.sOrientationMin);
 
+        //Views outputs.
         text1 = (TextView) findViewById(R.id.textPGender);
         text2 = (TextView) findViewById(R.id.textPExpress);
         text3 = (TextView) findViewById(R.id.textPOrient);
@@ -68,7 +77,10 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         text8 = (TextView) findViewById(R.id.textSExpressMin);
         text9 = (TextView) findViewById(R.id.textSOrientMin);
 
+        //Button to save updates and values.
         button = (Button) findViewById(R.id.bSaveRegister);
+
+        //setMax to 19 to keep range from 1 to 20.
         pGender.setMax(19);
         pExpression.setMax(19);
         pOrientation.setMax(19);
@@ -80,6 +92,8 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         sOrientationMin.setMax(19);
         main();
 
+
+        //Click Listener
         button.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 //For sharedPreferences, we do this:
@@ -149,9 +163,15 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
                 } else if(text6 < text9){
                     text6.setError("Max number can't be less than the min");
                 }
-                */
-                //Intent object to pass values.
 
+                */
+
+                //Calls the client sockets to send values to Server.
+                new sendPersonalInfo().execute();
+                new sendPSliders().execute();
+                new sendSSliders().execute();
+
+                //Intent object to pass values.
                 Intent intent = new Intent(getApplicationContext(), Slider.class);
                 String value1 = text1.getText().toString();
                 intent.putExtra("personalSlider1", value1);
@@ -180,22 +200,18 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
                 String value9 = text9.getText().toString();
                 intent.putExtra("seekingSlider3b", value9);
                 startActivity(intent);
-
-                new sendPSliders().execute();
-                new sendSSliders().execute();
-
             }
         });
     }
 
     //Main Class for registering sliders.
     public void main(){
+
+        ///////The following methods contribute to the Personal Slider Values.////////
         pGender.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text1.setText(String.valueOf(progress + 1));
             }
 
@@ -212,11 +228,9 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         });
 
         pExpression.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text2.setText(String.valueOf(progress + 1));
             }
 
@@ -233,11 +247,9 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         });
 
         pOrientation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text3.setText(String.valueOf(progress + 1));
             }
 
@@ -252,14 +264,12 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
             }
         });
 
-        ///////The following methods contribute to the Seeker Values.////////
+        ///////The following methods contribute to the Seeker Slider Values.////////
 
         sGenderMax.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text4.setText(String.valueOf(progress + 1));
             }
 
@@ -276,11 +286,9 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         });
 
         sExpressionMax.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text5.setText(String.valueOf(progress + 1));
             }
 
@@ -296,11 +304,9 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         });
 
         sOrientationMax.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text6.setText(String.valueOf(progress + 1));
             }
 
@@ -316,11 +322,9 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         });
 
         sGenderMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text7.setText(String.valueOf(progress + 1));
             }
 
@@ -337,11 +341,9 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         });
 
         sExpressionMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text8.setText(String.valueOf(progress + 1));
             }
 
@@ -358,11 +360,9 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         });
 
         sOrientationMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text9.setText(String.valueOf(progress + 1));
             }
 
@@ -378,11 +378,10 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         });
     }
 
-    class sendPSliders extends AsyncTask<Void,Void,Void> {
-        String gperson = text1.getText().toString();
-        String eperson = text2.getText().toString();
-        String operson = text3.getText().toString();
 
+    //Dummy client to make username for slider values to pass.
+    //Will be taken out later.
+    class sendPersonalInfo extends AsyncTask<Void,Void,Void> {
         PrintWriter out;
         BufferedReader in;
 
@@ -393,8 +392,9 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
                 out = new PrintWriter(sock.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
-                String command = "setPSlider, " + "Aguysname" + ", " + gperson + ", " + eperson
-                        + ", " + operson;
+                //Add user dummy
+                String command = "addUser, " + "Aaguy21" + ", " + "sumpass" + ", " + "Mitch"
+                        + ", " + "SomeDude" + ", " + "Aaguy21@thisweb.com" + ", " + "23";
 
                 out.println(command);//Sends command to the server.
                 Log.i("Register Command, ", command);
@@ -421,7 +421,57 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
         }
     }
 
+    //Client Socket passes values to the Server
+    class sendPSliders extends AsyncTask<Void,Void,Void> {
+
+        //Grabs the registerd Personal Slider values
+        String gperson = text1.getText().toString();
+        String eperson = text2.getText().toString();
+        String operson = text3.getText().toString();
+
+        PrintWriter out;
+        BufferedReader in;
+
+        protected Void doInBackground(Void... args) {
+            try {
+                Socket sock = new Socket("10.0.2.2", 4910);
+                out = new PrintWriter(sock.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+
+                //Command to pass for the server to read, then translate it to SQL command
+                //to store in the database, determining on the first value in the parameter.
+
+                String command = "setPSlider, " + "Aaguy21" + ", " + gperson + ", " + eperson
+                        + ", " + operson;
+
+                out.println(command);//Sends command to the server.
+                Log.i("Register Command, ", command);
+
+                String temp;
+                while ((temp = in.readLine()) != null) {
+                    if(temp == "true"){
+                        Log.i("true", command);
+                    } else {
+                        Log.i("Error", temp);
+                    }
+                    Log.d("Register Command, ", temp);
+                    System.out.println(temp);
+                }
+                sock.close();//Closes socket
+            } catch (UnknownHostException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    //Client Socket passes values to the Server
     class sendSSliders extends AsyncTask<Void,Void,Void> {
+        //Grabs the registered Seeking Slider values
         String gmax = text4.getText().toString();
         String emax = text5.getText().toString();
         String omax = text6.getText().toString();
@@ -434,15 +484,17 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
 
         protected Void doInBackground(Void... args) {
             try {
-                //host = InetAddress.getLocalHost();
                 Socket sock = new Socket("10.0.2.2", 4910);
                 out = new PrintWriter(sock.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
-                String command = "setSSlider, " + "Aguysname" + ", " + gmax + ", " + gmin + ", " +
-                        emax + ", " + emin + ", " + omax + ", " + omin;
+                //Command to pass for the server to read, then translate it to SQL command
+                //to store in the database, determining on the first value in the parameter.
 
-                out.println(command);
+                String command = "setSSlider, " + "Aaguy21" + ", " + gmin + ", " + gmax + ", " +
+                        emin + ", " + emax + ", " + omin + ", " + omax;
+
+                out.println(command);//Sends command tothe server.
                 Log.i("Register Command", command);
                 String temp;
                 while ((temp = in.readLine()) != null) {
@@ -454,7 +506,7 @@ public class MainActivity extends AppCompatActivity {//public class RegisterSlid
                     Log.d("Register Command, ", temp);
                     System.out.println(temp);
                 }
-                sock.close();
+                sock.close();//closes Socket
             } catch (UnknownHostException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

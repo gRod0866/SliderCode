@@ -38,6 +38,7 @@
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:id="@+id/homePGender" />
 
     <TextView
@@ -111,7 +112,6 @@
         android:text="O"
         android:id="@+id/pOrientationData"
         android:layout_gravity="center_horizontal" />
-
 
     <!-- The Seeker's Whole Values for their Slider-->
     <TextView

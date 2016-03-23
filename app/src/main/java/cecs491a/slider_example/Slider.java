@@ -19,8 +19,6 @@ import android.content.SharedPreferences;
 public class Slider extends AppCompatActivity {//public class HomePage()
 
     //EditText Username;
-    //EditText Name;
-    //EditText Birthdate;
 
     SeekBar HomePGender, HomePExpress, HomePOrient,
             HomeSeekGender, HomeSeekExpress, HomeSeekOrient,

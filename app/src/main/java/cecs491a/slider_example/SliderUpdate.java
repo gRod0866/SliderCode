@@ -20,26 +20,35 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Button;
 import android.content.*;
-import android.widget.Toast;
 import java.lang.Integer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 public class SliderUpdate extends AppCompatActivity {//The Sliders
+
+    //3 SeekBar Objects for the Personal Slider
     SeekBar pGender, pExpression, pOrientation;
+
+    //6 SeekBar Objects for the Seeking Slider
     SeekBar sGenderMax, sExpressionMax, sOrientationMax, sGenderMin, sExpressionMin, sOrientationMin;
+
+    //Button will cause the clickListener to activate.
     Button UpdateButton;
+
+    //Shows text that determines the value of the SeekBar.
     TextView text1, text2, text3, text4, text5, text6, text7, text8, text9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slider_update);
+
+        /*Initialize values*/
+
+        //Seekbar represents our sliders. 9 total as of now.
         pGender = (SeekBar) findViewById(R.id.pUpdateGender);
         pExpression = (SeekBar) findViewById(R.id.pUpdateExpression);
         pOrientation = (SeekBar) findViewById(R.id.pUpdateOrientation);
@@ -50,6 +59,7 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         sExpressionMin = (SeekBar) findViewById(R.id.sUpdateExpressionMin);
         sOrientationMin = (SeekBar) findViewById(R.id.sUpdateOrientationMin);
 
+        //Views outputs.
         text1 = (TextView) findViewById(R.id.textUpdatePGender);
         text2 = (TextView) findViewById(R.id.textUpdatePExpress);
         text3 = (TextView) findViewById(R.id.textUpdatePOrient);
@@ -60,7 +70,10 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         text8 = (TextView) findViewById(R.id.textUpdateSExpressMin);
         text9 = (TextView) findViewById(R.id.textUpdateSOrientMin);
 
+        //Button to save updates and values.
         UpdateButton = (Button) findViewById(R.id.bUpdateButton);
+
+        //setMax to 19 to keep range from 1 to 20.
         pGender.setMax(19);
         pExpression.setMax(19);
         pOrientation.setMax(19);
@@ -71,6 +84,7 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         sExpressionMin.setMax(19);
         sOrientationMin.setMax(19);
 
+        //Grabs values from previous activity.
         Intent intent1 = getIntent();
         String value1 = intent1.getStringExtra("personalUpSlider1");
         int val1 = Integer.parseInt(value1);
@@ -108,6 +122,7 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         int val9 = Integer.parseInt(value9);
         text9.setText(value9);
 
+        //Sets seekbar's progress to the values the user had stored before.
         pGender.setProgress(val1);
         pExpression.setProgress(val2);
         pOrientation.setProgress(val3);
@@ -119,11 +134,15 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         sOrientationMin.setProgress(val9);
         updateSliders();
 
+        //Click Listener
         UpdateButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
+
+                //Calls the client sockets to send values to Server.
                 new sendUpdatePSliders().execute();
                 new sendUpdateSSliders().execute();
-                //Intent object to pass values.
+
+                //Intent object to pass values to next activity.
                 Intent intent = new Intent(getApplicationContext(), Slider.class);//Homepage.class
 
                 String value1 = text1.getText().toString();
@@ -158,13 +177,17 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         });
     }
 
-    public void updateSliders(){//Main Class for Updating Sliders
+    //Main Class to Update Sliders.
+    public void updateSliders(){
+
+        //All progress values are incremented by 1 to get the minimum range.
+
+        ///////The following methods contribute to the Personal Slider Values.////////
+
         pGender.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text1.setText(String.valueOf(progress + 1));
             }
 
@@ -181,11 +204,9 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         });
 
         pExpression.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text2.setText(String.valueOf(progress + 1));
             }
 
@@ -202,11 +223,9 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         });
 
         pOrientation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text3.setText(String.valueOf(progress + 1));
             }
 
@@ -221,14 +240,12 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
             }
         });
 
-        ///////The following methods contribute to the Seeker Values.////////
+        ///////The following methods contribute to the Seeker Slider Values.////////
 
         sGenderMax.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text4.setText(String.valueOf(progress + 1));
             }
 
@@ -245,11 +262,9 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         });
 
         sExpressionMax.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text5.setText(String.valueOf(progress + 1));
             }
 
@@ -266,11 +281,9 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         });
 
         sOrientationMax.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text6.setText(String.valueOf(progress + 1));
             }
 
@@ -286,11 +299,9 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         });
 
         sGenderMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text7.setText(String.valueOf(progress + 1));
             }
 
@@ -307,11 +318,9 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         });
 
         sExpressionMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text8.setText(String.valueOf(progress + 1));
             }
 
@@ -328,11 +337,9 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         });
 
         sOrientationMin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO Auto-generated method stub
-                value = progress;
                 text9.setText(String.valueOf(progress + 1));
             }
 
@@ -346,10 +353,12 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
                 // TODO Auto-generated method stub
             }
         });
-
     }
 
+    //Client Socket passes values to the Server
     class sendUpdatePSliders extends AsyncTask<Void,Void,Void> {
+
+        //Grabs the new updated Personal Slider values
         String gperson = text1.getText().toString();
         String eperson = text2.getText().toString();
         String operson = text3.getText().toString();
@@ -363,7 +372,10 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
                 out = new PrintWriter(sock.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
-                String command = "updatePSlider, " + "BPizzle" + ", " + gperson + ", " + eperson
+                //Command to pass for the server to read, then translate it to SQL command
+                //to store in the database, determining on the first value in the parameter.
+
+                String command = "updatePSlider, " + "Aaguy21" + ", " + gperson + ", " + eperson
                         + ", " + operson;
 
                 out.println(command);
@@ -390,7 +402,10 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
         }
     }
 
+    //Client Socket passes values to the Server
     class sendUpdateSSliders extends AsyncTask<Void,Void,Void> {
+
+        //Grabs the new updated Seeking Slider values
         String gmax = text4.getText().toString();
         String emax = text5.getText().toString();
         String omax = text6.getText().toString();
@@ -403,16 +418,18 @@ public class SliderUpdate extends AppCompatActivity {//The Sliders
 
         protected Void doInBackground(Void... args) {
             try {
-                //host = InetAddress.getLocalHost();
                 Socket sock = new Socket("10.0.2.2", 4910);
                 out = new PrintWriter(sock.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
                 //username = username of whatever was passed.
-                String command = "updateSSlider, " + "BPizzle" + ", " + gmax + ", " + gmin + ", " +
-                        emax + ", " + emin + ", " + omax + ", " + omin;
 
-                out.println(command);
+                //Command to pass for the server to read, then translate it to SQL command
+                //to store in the database, determining on the first value in the parameter.
+                String command = "updateSSlider, " + "Aaguy21" + ", " + gmin + ", " + gmax + ", " +
+                        emin + ", " + emax + ", " + omin + ", " + omax;
+
+                out.println(command);//Server
                 Log.i("Register Command", command);
                 String temp;
                 while ((temp = in.readLine()) != null) {
